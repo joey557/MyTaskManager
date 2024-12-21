@@ -1,8 +1,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text, Button, Card, Title, Paragraph } from "react-native-paper";
+import { useRouter } from "expo-router";
 
-export default function HomePage() {
+export default function HomePage(): JSX.Element {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       <Card style={styles.card}>
@@ -16,7 +19,7 @@ export default function HomePage() {
           <Button
             mode="contained"
             style={styles.button}
-            onPress={() => console.log("Get Started")}
+            onPress={() => router.push("/taskList")}
           >
             Get Started
           </Button>
