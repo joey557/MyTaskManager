@@ -17,9 +17,10 @@ export default function TaskEditForm({
 }: TaskEditFormProps): JSX.Element {
   const [title, setTitle] = useState<string>(task.title);
   const [description, setDescription] = useState<string>(task.description);
+  const [status, setStatus] = useState<"pending" | "completed">(task.status);
 
   const handleSave = (): void => {
-    onSave(task.id, { title, description });
+    onSave(task.id, { title, description, status });
   };
 
   return (
