@@ -5,6 +5,11 @@ export interface Task {
   status: "pending" | "completed";
 }
 
+export interface TaskFormData {
+  title: string;
+  description: string;
+}
+
 export const mockTasks: Task[] = [
   {
     id: "1",
