@@ -1,6 +1,11 @@
-// app/taskList.tsx
 import React, { useState } from "react";
-import { View, StyleSheet, FlatList, ListRenderItem } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ListRenderItem,
+  TouchableOpacity,
+} from "react-native";
 import {
   Card,
   Title,
@@ -54,20 +59,35 @@ export default function TasksPage(): JSX.Element {
     setIsAddModalVisible(false);
   };
 
+  const toggleStatus = (id: string): void => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              status: task.status === "pending" ? "completed" : "pending",
+            }
+          : task
+      )
+    );
+  };
+
   const renderTaskItem: ListRenderItem<Task> = ({ item }) => (
     <Card style={styles.card}>
       <Card.Content>
         <View style={styles.headerContainer}>
           <Title>{item.title}</Title>
           <View style={styles.actionContainer}>
-            <Badge
-              style={[
-                styles.statusBadge,
-                { backgroundColor: getStatusColor(item.status) },
-              ]}
-            >
-              {item.status}
-            </Badge>
+            <TouchableOpacity onPress={() => toggleStatus(item.id)}>
+              <Badge
+                style={[
+                  styles.statusBadge,
+                  { backgroundColor: getStatusColor(item.status) },
+                ]}
+              >
+                {item.status}
+              </Badge>
+            </TouchableOpacity>
             <IconButton
               icon="pencil"
               size={20}
