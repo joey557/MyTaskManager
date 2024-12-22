@@ -21,6 +21,7 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "scheme": "PersonalTaskManager",
     "web": {
       "favicon": "./assets/favicon.png"
     }
