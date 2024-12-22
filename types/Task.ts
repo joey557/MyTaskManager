@@ -8,6 +8,7 @@ export interface Task {
 export interface TaskFormData {
   title: string;
   description: string;
+  status: "pending" | "completed";
 }
 
 export const mockTasks: Task[] = [
@@ -30,3 +31,9 @@ export const mockTasks: Task[] = [
     status: "pending",
   },
 ];
+
+export interface AddTaskModalProps {
+  visible: boolean;
+  onDismiss: () => void;
+  onSave: (data: TaskFormData) => void;
+}

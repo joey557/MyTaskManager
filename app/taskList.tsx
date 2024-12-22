@@ -9,13 +9,16 @@ import {
   IconButton,
   Portal,
   Modal,
+  Button,
 } from "react-native-paper";
 import { Task, TaskFormData, mockTasks } from "../types/Task";
 import TaskEditForm from "../components/TaskEditForm";
+import AddTaskModal from "../components/AddTaskModal";
 
 export default function TasksPage(): JSX.Element {
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
 
   const getStatusColor = (status: Task["status"]): string => {
     return status === "completed" ? "#4CAF50" : "#FFA000";
@@ -38,6 +41,17 @@ export default function TasksPage(): JSX.Element {
 
   const handleDelete = (id: string): void => {
     setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const handleAddTask = (data: TaskFormData): void => {
+    const newTask: Task = {
+      id: Date.now().toString(),
+      ...data,
+      status: data.status || "pending",
+    };
+
+    setTasks([...tasks, newTask]);
+    setIsAddModalVisible(false);
   };
 
   const renderTaskItem: ListRenderItem<Task> = ({ item }) => (
@@ -78,6 +92,19 @@ export default function TasksPage(): JSX.Element {
         keyExtractor={(item) => item.id}
         renderItem={renderTaskItem}
         contentContainerStyle={styles.listContainer}
+      />
+      <Button
+        mode="contained"
+        style={styles.addButton}
+        onPress={() => setIsAddModalVisible(true)}
+      >
+        Add Task
+      </Button>
+
+      <AddTaskModal
+        visible={isAddModalVisible}
+        onDismiss={() => setIsAddModalVisible(false)}
+        onSave={handleAddTask}
       />
 
       <Portal>
@@ -140,5 +167,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     margin: 20,
     borderRadius: 8,
+  },
+  addButton: {
+    margin: 16,
+    alignSelf: "center",
   },
 });
