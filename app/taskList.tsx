@@ -9,21 +9,22 @@ import {
 import {
   Card,
   Title,
-  Paragraph,
   Badge,
   IconButton,
+  Button,
   Portal,
   Modal,
-  Button,
 } from "react-native-paper";
 import { Task, TaskFormData, mockTasks } from "../types/Task";
 import TaskEditForm from "../components/TaskEditForm";
 import AddTaskModal from "../components/AddTaskModal";
+import TaskDetailsModal from "../components/TaskDetailsModal";
 
 export default function TasksPage(): JSX.Element {
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const getStatusColor = (status: Task["status"]): string => {
     return status === "completed" ? "#4CAF50" : "#FFA000";
@@ -73,36 +74,41 @@ export default function TasksPage(): JSX.Element {
   };
 
   const renderTaskItem: ListRenderItem<Task> = ({ item }) => (
-    <Card style={styles.card}>
-      <Card.Content>
-        <View style={styles.headerContainer}>
-          <Title>{item.title}</Title>
-          <View style={styles.actionContainer}>
-            <TouchableOpacity onPress={() => toggleStatus(item.id)}>
-              <Badge
-                style={[
-                  styles.statusBadge,
-                  { backgroundColor: getStatusColor(item.status) },
-                ]}
-              >
-                {item.status}
-              </Badge>
-            </TouchableOpacity>
-            <IconButton
-              icon="pencil"
-              size={20}
-              onPress={() => handleEdit(item)}
-            />
-            <IconButton
-              icon="delete"
-              size={20}
-              onPress={() => handleDelete(item.id)}
-            />
+    <TouchableOpacity onPress={() => setSelectedTask(item)}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.headerContainer}>
+            <Title>{item.title}</Title>
+            <View style={styles.actionContainer}>
+              <TouchableOpacity onPress={() => toggleStatus(item.id)}>
+                <Badge
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: getStatusColor(item.status) },
+                  ]}
+                >
+                  {item.status}
+                </Badge>
+              </TouchableOpacity>
+              <IconButton
+                icon="pencil"
+                size={20}
+                onPress={() => handleEdit(item)}
+              />
+              <IconButton
+                icon="delete"
+                size={20}
+                onPress={() => handleDelete(item.id)}
+              />
+            </View>
           </View>
-        </View>
-        <Paragraph style={styles.description}>{item.description}</Paragraph>
-      </Card.Content>
-    </Card>
+          {/* Truncated description */}
+          <Title style={styles.description}>
+            {item.description.split(" ").slice(0, 5).join(" ")}...
+          </Title>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
   );
 
   return (
@@ -125,6 +131,12 @@ export default function TasksPage(): JSX.Element {
         visible={isAddModalVisible}
         onDismiss={() => setIsAddModalVisible(false)}
         onSave={handleAddTask}
+      />
+
+      <TaskDetailsModal
+        visible={!!selectedTask}
+        task={selectedTask}
+        onDismiss={() => setSelectedTask(null)}
       />
 
       <Portal>
@@ -179,6 +191,7 @@ const styles = StyleSheet.create({
   description: {
     marginTop: 8,
     color: "#666",
+    fontSize: 17,
   },
   statusBadge: {
     alignSelf: "center",
