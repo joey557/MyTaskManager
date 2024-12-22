@@ -14,6 +14,7 @@ import {
   Button,
   Portal,
   Modal,
+  Searchbar,
 } from "react-native-paper";
 import { Task, TaskFormData, mockTasks } from "../types/Task";
 import TaskEditForm from "../components/TaskEditForm";
@@ -21,11 +22,18 @@ import AddTaskModal from "../components/AddTaskModal";
 import TaskDetailsModal from "../components/TaskDetailsModal";
 
 export default function TasksPage(): JSX.Element {
+  // Track all tasks and their states
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
+  // Filter tasks based on search input
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  // Return green for completed tasks, yellow for pending ones
   const getStatusColor = (status: Task["status"]): string => {
     return status === "completed" ? "#4CAF50" : "#FFA000";
   };
@@ -49,6 +57,7 @@ export default function TasksPage(): JSX.Element {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  // Create new task and add it to list
   const handleAddTask = (data: TaskFormData): void => {
     const newTask: Task = {
       id: Date.now().toString(),
@@ -60,6 +69,7 @@ export default function TasksPage(): JSX.Element {
     setIsAddModalVisible(false);
   };
 
+  // Switch task between completed and pending
   const toggleStatus = (id: string): void => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -102,7 +112,6 @@ export default function TasksPage(): JSX.Element {
               />
             </View>
           </View>
-          {/* Truncated description */}
           <Title style={styles.description}>
             {item.description.split(" ").slice(0, 5).join(" ")}...
           </Title>
@@ -113,12 +122,20 @@ export default function TasksPage(): JSX.Element {
 
   return (
     <View style={styles.container}>
+      <Searchbar
+        placeholder="Search tasks"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        style={styles.searchbar}
+      />
+
       <FlatList<Task>
-        data={tasks}
+        data={filteredTasks}
         keyExtractor={(item) => item.id}
         renderItem={renderTaskItem}
         contentContainerStyle={styles.listContainer}
       />
+
       <Button
         mode="contained"
         style={styles.addButton}
@@ -162,6 +179,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+  },
+  searchbar: {
+    margin: 16,
+    elevation: 4,
+    backgroundColor: "white",
   },
   listContainer: {
     padding: 16,
