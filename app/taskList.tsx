@@ -36,6 +36,10 @@ export default function TasksPage(): JSX.Element {
     setEditingTask(null);
   };
 
+  const handleDelete = (id: string): void => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
   const renderTaskItem: ListRenderItem<Task> = ({ item }) => (
     <Card style={styles.card}>
       <Card.Content>
@@ -54,6 +58,11 @@ export default function TasksPage(): JSX.Element {
               icon="pencil"
               size={20}
               onPress={() => handleEdit(item)}
+            />
+            <IconButton
+              icon="delete"
+              size={20}
+              onPress={() => handleDelete(item.id)}
             />
           </View>
         </View>
