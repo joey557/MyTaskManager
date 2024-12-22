@@ -1,12 +1,13 @@
+// Modal component to show full task details when a task is clicked
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Modal, Portal, Text, Button } from "react-native-paper";
 import { Task } from "../types/Task";
 
 interface TaskDetailsModalProps {
-  visible: boolean;
+  visible: boolean; // Show/hide modal
   task: Task | null;
-  onDismiss: () => void;
+  onDismiss: () => void; // Handle modal close
 }
 
 export default function TaskDetailsModal({
@@ -14,6 +15,7 @@ export default function TaskDetailsModal({
   task,
   onDismiss,
 }: TaskDetailsModalProps): JSX.Element | null {
+  // Don't render anything if no task is selected
   if (!task) return null;
 
   return (

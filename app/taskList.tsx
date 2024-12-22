@@ -30,8 +30,8 @@ export default function TasksPage(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Filter tasks based on search input
-  const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTasks = tasks.filter(
+    (task) => task.title.toLowerCase().includes(searchQuery.toLowerCase()) // Check if task title contains search text
   );
   // Return green for completed tasks, yellow for pending ones
   const getStatusColor = (status: Task["status"]): string => {

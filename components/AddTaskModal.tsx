@@ -1,3 +1,4 @@
+// Modal component for adding new tasks to the list
 import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import { Modal, Button, Text, Portal } from "react-native-paper";
@@ -5,7 +6,7 @@ import { TaskFormData } from "../types/Task";
 
 interface AddTaskModalProps {
   visible: boolean;
-  onDismiss: () => void;
+  onDismiss: () => void; // Called when modal is closed
   onSave: (data: TaskFormData) => void;
 }
 
@@ -14,15 +15,16 @@ export default function AddTaskModal({
   onDismiss,
   onSave,
 }: AddTaskModalProps): JSX.Element {
+  // Store form data while user is typing
   const [taskData, setTaskData] = React.useState<TaskFormData>({
     title: "",
     description: "",
-    status: "pending", // 默认值为 "pending"
+    status: "pending",
   });
 
   const handleSave = (): void => {
-    // 调用保存方法，并重置输入框
     onSave(taskData);
+    // Reset form after saving
     setTaskData({ title: "", description: "", status: "pending" });
   };
 
@@ -40,6 +42,7 @@ export default function AddTaskModal({
           value={taskData.title}
           onChangeText={(text) => setTaskData({ ...taskData, title: text })}
         />
+        {/* Description input */}
         <TextInput
           placeholder="Description"
           style={styles.input}

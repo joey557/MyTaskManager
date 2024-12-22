@@ -1,4 +1,4 @@
-// components/TaskEditForm.tsx
+// Form component for editing existing tasks
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button } from "react-native-paper";
@@ -7,7 +7,7 @@ import { Task, TaskFormData } from "../types/Task";
 interface TaskEditFormProps {
   task: Task;
   onSave: (id: string, data: TaskFormData) => void;
-  onCancel: () => void;
+  onCancel: () => void; // Cancel edit callback
 }
 
 export default function TaskEditForm({
@@ -15,6 +15,7 @@ export default function TaskEditForm({
   onSave,
   onCancel,
 }: TaskEditFormProps): JSX.Element {
+  // Form state for editing task details
   const [title, setTitle] = useState<string>(task.title);
   const [description, setDescription] = useState<string>(task.description);
   const [status, setStatus] = useState<"pending" | "completed">(task.status);

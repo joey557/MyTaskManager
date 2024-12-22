@@ -10,7 +10,9 @@ export default function HomePage(): JSX.Element {
     <View style={styles.container}>
       <Card style={styles.card}>
         <Card.Content>
-          <Title style={styles.title}>Welcome to My Task Manager</Title>
+          <Title style={styles.title}>
+            Welcome to Personal Task Manager App
+          </Title>
           <Paragraph>
             Organize your tasks efficiently and effectively!
           </Paragraph>
