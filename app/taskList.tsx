@@ -1,11 +1,39 @@
-import React from "react";
+// app/taskList.tsx
+import React, { useState } from "react";
 import { View, StyleSheet, FlatList, ListRenderItem } from "react-native";
-import { Card, Title, Paragraph, Badge } from "react-native-paper";
-import { Task, mockTasks } from "../types/Task";
+import {
+  Card,
+  Title,
+  Paragraph,
+  Badge,
+  IconButton,
+  Portal,
+  Modal,
+} from "react-native-paper";
+import { Task, TaskFormData, mockTasks } from "../types/Task";
+import TaskEditForm from "../components/TaskEditForm";
 
 export default function TasksPage(): JSX.Element {
+  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+
   const getStatusColor = (status: Task["status"]): string => {
     return status === "completed" ? "#4CAF50" : "#FFA000";
+  };
+
+  const handleEdit = (task: Task): void => {
+    setEditingTask(task);
+  };
+
+  const handleSave = (id: string, data: TaskFormData): void => {
+    setTasks(
+      tasks.map((task) => (task.id === id ? { ...task, ...data } : task))
+    );
+    setEditingTask(null);
+  };
+
+  const handleCancel = (): void => {
+    setEditingTask(null);
   };
 
   const renderTaskItem: ListRenderItem<Task> = ({ item }) => (
@@ -13,14 +41,21 @@ export default function TasksPage(): JSX.Element {
       <Card.Content>
         <View style={styles.headerContainer}>
           <Title>{item.title}</Title>
-          <Badge
-            style={[
-              styles.statusBadge,
-              { backgroundColor: getStatusColor(item.status) },
-            ]}
-          >
-            {item.status}
-          </Badge>
+          <View style={styles.actionContainer}>
+            <Badge
+              style={[
+                styles.statusBadge,
+                { backgroundColor: getStatusColor(item.status) },
+              ]}
+            >
+              {item.status}
+            </Badge>
+            <IconButton
+              icon="pencil"
+              size={20}
+              onPress={() => handleEdit(item)}
+            />
+          </View>
         </View>
         <Paragraph style={styles.description}>{item.description}</Paragraph>
       </Card.Content>
@@ -30,11 +65,27 @@ export default function TasksPage(): JSX.Element {
   return (
     <View style={styles.container}>
       <FlatList<Task>
-        data={mockTasks}
+        data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={renderTaskItem}
         contentContainerStyle={styles.listContainer}
       />
+
+      <Portal>
+        <Modal
+          visible={editingTask !== null}
+          onDismiss={handleCancel}
+          contentContainerStyle={styles.modalContainer}
+        >
+          {editingTask && (
+            <TaskEditForm
+              task={editingTask}
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          )}
+        </Modal>
+      </Portal>
     </View>
   );
 }
@@ -64,11 +115,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
+  actionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   description: {
     marginTop: 8,
     color: "#666",
   },
   statusBadge: {
     alignSelf: "center",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    margin: 20,
+    borderRadius: 8,
   },
 });
